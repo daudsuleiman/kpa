@@ -1,116 +1,120 @@
-import { StatusBar } from 'expo-status-bar';
-import React, {useContext, useEffect, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import AjiraDashboard from './screens/AjiraDashboard';
-import AjiraAllProducts from './screens/AjiraAllProducts';
-import AjiraMyOrders from './screens/AjiraMyOrders';
-import AjiraDetails from './screens/AjiraDetails';
+import React, { useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AppLoading } from "expo";
 
-import { AppLoading } from 'expo';
-import {createStackNavigator} from "@react-navigation/stack";
-import {createDrawerNavigator} from "@react-navigation/drawer";
-import {NavigationContainer} from "@react-navigation/native";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import colors from './apps/configs/colors';
-import AjiraDrawer from './apps/components/AjiraDrawer';
-import AjiraLogin from './screens/AjiraLogin';
-import AuthContext from './apps/auth/context';
-import authStorage from './apps/auth/authStorage';
-
+import WelcomeScreen from "./screens/WelcomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegistrationScreen from "./screens/RegistrationScreen";
+import UpdateScreen from "./screens/UpdateScreen";
+import HomeScreen from "./screens/HomeScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+import AuthNavigator from "./apps/navigation/AuthNavigator";
+import ButtonEdit from "./apps/navigation/ButtonEdit";
+import colors from "./apps/configs/colors";
+import AuthContext from "./apps/auth/context";
+import authStorage from "./apps/auth/authStorage";
 
 const Stack = createStackNavigator();
-const Drawer =  createDrawerNavigator();
-
-
-const DrawerNavigator = (props) =>(
-
-  <Drawer.Navigator
-
-    drawerContent={(props)=> <AjiraDrawer {...props}/>}
-    drawerContentOptions={{
-    activeTintColor: colors.primary,
-    itemStyle: {marginVertical: 6},
-    alignContent:"center"
-  }}
-  
-
-  
-  screenOptions={{
-    headerStyle:{
-       elevation: 0,
-      shadowOpacity: 0,
-      borderBottomWidth: 0,
-      backgroundColor:colors.primary, 
-      height:80},
-    headerTintColor:colors.white,
-    headerShown:true,
-  }}>
-
-     <Drawer.Screen name={"Dashboard"} component={AjiraDashboard}></Drawer.Screen>
-     <Drawer.Screen name={"All Products"} component={AjiraAllProducts}></Drawer.Screen>
-     <Drawer.Screen name={"My Orders"} component={AjiraMyOrders}></Drawer.Screen>
-  </Drawer.Navigator>
-
-)
-
-
-const StackNavigator = () =>(
+const StackNavigator = () => (
   <Stack.Navigator>
-
-<Stack.Screen 
-options={{
-  headerShown:false
-}}
-name={"Home"} component={AjiraLogin}></Stack.Screen>
-
-
-    <Stack.Screen  name={"Details"} component={AjiraDetails} 
-        options={{
-         headerTitleStyle:{
-        alignContent:"center"
-      },
-      headerStyle:{backgroundColor: colors.primary, height:100},
-      headerTintColor:colors.white,  }}
-    
-    ></Stack.Screen>
+    <Stack.Screen
+      name="welcome"
+      component={WelcomeScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Login"
+      component={LoginScreen}
+      options={{
+        headerTitleAlign: "center",
+        headerStyle: {
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
+        },
+      }}
+    />
+    <Stack.Screen
+      name="SignUp"
+      component={RegistrationScreen}
+      options={{
+        headerTitleAlign: "center",
+        headerStyle: {
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
+        },
+      }}
+    />
   </Stack.Navigator>
-)
+);
+
+const Tab = createBottomTabNavigator();
+
+const TabNavigator = () => (
+  <Tab.Navigator
+    tabBarOptions={{
+      activeTintColor: colors.primary,
+    }}
+  >
+    <Tab.Screen
+      name="dashboard"
+      component={HomeScreen}
+      options={{
+        tabBarIcon: ({ size, color }) => (
+          <MaterialCommunityIcons
+            name="view-dashboard"
+            size={size}
+            color={color}
+          />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="updateDetails"
+      component={UpdateScreen}
+      options={({ navigation }) => ({
+        tabBarButton: () => (
+          <ButtonEdit onPress={() => navigation.navigate("updateDetails")} />
+        ),
+      })}
+    />
+    <Tab.Screen
+      name="settings"
+      component={SettingsScreen}
+      options={{
+        tabBarIcon: ({ size, color }) => (
+          <MaterialCommunityIcons name="settings" size={size} color={color} />
+        ),
+      }}
+    />
+  </Tab.Navigator>
+);
 
 export default function App() {
+  const [user, setUser] = useState(null);
+  const [isReady, setIsReady] = useState(false);
 
-const [user,setUser] = useState();
+  const restoreUser = async () => {
+    const userToken = await authStorage.getToken();
+    if (!userToken) return;
 
- const[isAppLoading,setIsAppLoading] = useState(false);
+    setUser(JSON.parse(userToken));
+  };
 
-const restoreUser = async() =>{
-   const token = await authStorage.getToken();
-   if(!token)return;
+  if (!isReady)
+    return (
+      <AppLoading startAsync={restoreUser} onFinish={() => setIsReady(true)} />
+    );
 
-  setUser(JSON.parse(token));
-}
-
-if(!isAppLoading) return <AppLoading startAsync={restoreUser} onFinish={()=>setIsAppLoading(true)}/>
-  
-return (
- <AuthContext.Provider value={{user,setUser}}>
-
-<NavigationContainer>
-   {!user ? <StackNavigator/> : <DrawerNavigator/>}
-</NavigationContainer>
- </AuthContext.Provider>
-
-
+  return (
+    <AuthContext.Provider value={{ user, setUser }}>
+      <NavigationContainer>
+        {user ? <TabNavigator /> : <AuthNavigator />}
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-menu:{
-  paddingRight:16
-},
-image:{
-  height:40,
-  width:40,
-  borderRadius:20,
-  marginRight:10
-},
-});

@@ -5,8 +5,8 @@ const key = 'authUser'
 
 const storeToken = async authToken => {
     try {
-        await SecureStore.setItemAsync(key,authToken)  
-        console.log("user saved")      
+        await SecureStore.setItemAsync(key,JSON.stringify(authToken))  
+        // console.log("user saved")      
     } catch (error) {
         console.log("Error storing user"+error)
     }
@@ -25,6 +25,7 @@ try {
 
 const logOutUser = async() =>{
 try {
+    // console.log("user logged out")
    return await SecureStore.deleteItemAsync(key);
     
 } catch (error) {

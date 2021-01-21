@@ -7,7 +7,6 @@ export default useApi = (apiFunction) =>{
     const [error, setError] = useState(false);
 
     const loadApiData = async () => {  
-
         setIsLoading(true);
         const response = await apiFunction();
         setIsLoading(false);
@@ -23,6 +22,9 @@ export default useApi = (apiFunction) =>{
     const login = ({email,password}) => {
     console.log(`email: ${email} password ${password}`)
     }
+
+
+    
 
  return{isLoading, error, apiData, loadApiData,login}
 

@@ -5,7 +5,7 @@ import {StyleSheet,TouchableOpacity, Text } from 'react-native';
 import colors from '../configs/colors';
 
 
-function AjiraFab({icon,size,backgroundColor,text,onClick}){
+function KoodiFab({icon,size,backgroundColor,text,onClick}){
 return(
     <TouchableOpacity onPress={onClick} style={[{width:size,height:size,borderRadius:size/2, backgroundColor},styles.container]}>
        {text&& <Text style={styles.text}>{text.toUpperCase()}</Text>}
@@ -27,4 +27,4 @@ const styles = StyleSheet.create({
       },
 })
 
-export default AjiraFab;
+export default KoodiFab;

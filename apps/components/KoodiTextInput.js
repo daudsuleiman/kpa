@@ -5,12 +5,16 @@ import colors from '../configs/colors';
 
 
 
-function AjiraTextInput({ icon,placeholder,size, width = "90%", ...otherProps }){
+function KoodiTextInput({ icon, placeholder, size, onChangeText, width = "90%", ...otherProps}){
+
+    const handleTectChange = (text) =>{
+        onChangeText(text)
+    }
 
     return(
         <View style={[styles.container, { width,borderRadius:size/2 }]}>
         {icon&& <MaterialCommunityIcons name={icon} size={size/2} color={colors.darkGray} />}
-       <TextInput style={[styles.inputField,{height:size}]}  placeholder={placeholder}/>
+       <TextInput  style={[styles.inputField,{height:size}]} {...otherProps}  placeholder={placeholder} onChangeText={handleTectChange}/>
       </View>
     );
 }
@@ -32,4 +36,4 @@ const styles = StyleSheet.create({
 }
 
 })
-export default AjiraTextInput;
+export default KoodiTextInput;

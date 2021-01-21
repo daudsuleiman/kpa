@@ -3,7 +3,7 @@ import cache from '../util/Cache';
 
 
 apiClient = create({
-    baseURL: "https://www.ajiraconnect.com/mobiletest"
+    baseURL: "http://koodiweb-service-apis.herokuapp.com/api"
 });
 
 const get = apiClient.get;

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Ajira",
-    "slug": "Ajira",
+    "name": "KoodiApp",
+    "slug": "KoodiApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
@@ -24,7 +24,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.fin254.Ajira"
+      "package": "com.fin254.KoodiApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

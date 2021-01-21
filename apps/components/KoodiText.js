@@ -2,10 +2,9 @@ import React from 'react'
 import {Text,StyleSheet} from 'react-native';
 import configs from '../configs/configs';
 
-function AjiraText({children,style, ...otherProps}){
+function KoodiText({children,style, ...otherProps}){
 
 return(
-
     <Text style={[configs.text, style]} {...otherProps}>
        {children}
     </Text>
@@ -18,4 +17,4 @@ return(
 const styles = StyleSheet.create({
 
 })
-export default AjiraText;
+export default KoodiText;

@@ -1,120 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { AppLoading } from "expo";
+import MainNavigator from "./apps/navigation/mainNavigation";
 
-import WelcomeScreen from "./screens/WelcomeScreen";
-import LoginScreen from "./screens/LoginScreen";
-import RegistrationScreen from "./screens/RegistrationScreen";
-import UpdateScreen from "./screens/UpdateScreen";
-import HomeScreen from "./screens/HomeScreen";
-import SettingsScreen from "./screens/SettingsScreen";
-import AuthNavigator from "./apps/navigation/AuthNavigator";
-import ButtonEdit from "./apps/navigation/ButtonEdit";
-import colors from "./apps/configs/colors";
-import AuthContext from "./apps/auth/context";
-import authStorage from "./apps/auth/authStorage";
-
-const Stack = createStackNavigator();
-const StackNavigator = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="welcome"
-      component={WelcomeScreen}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="Login"
-      component={LoginScreen}
-      options={{
-        headerTitleAlign: "center",
-        headerStyle: {
-          elevation: 0,
-          shadowOpacity: 0,
-          borderBottomWidth: 0,
-        },
-      }}
-    />
-    <Stack.Screen
-      name="SignUp"
-      component={RegistrationScreen}
-      options={{
-        headerTitleAlign: "center",
-        headerStyle: {
-          elevation: 0,
-          shadowOpacity: 0,
-          borderBottomWidth: 0,
-        },
-      }}
-    />
-  </Stack.Navigator>
-);
-
-const Tab = createBottomTabNavigator();
-
-const TabNavigator = () => (
-  <Tab.Navigator
-    tabBarOptions={{
-      activeTintColor: colors.primary,
-    }}
-  >
-    <Tab.Screen
-      name="dashboard"
-      component={HomeScreen}
-      options={{
-        tabBarIcon: ({ size, color }) => (
-          <MaterialCommunityIcons
-            name="view-dashboard"
-            size={size}
-            color={color}
-          />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="updateDetails"
-      component={UpdateScreen}
-      options={({ navigation }) => ({
-        tabBarButton: () => (
-          <ButtonEdit onPress={() => navigation.navigate("updateDetails")} />
-        ),
-      })}
-    />
-    <Tab.Screen
-      name="settings"
-      component={SettingsScreen}
-      options={{
-        tabBarIcon: ({ size, color }) => (
-          <MaterialCommunityIcons name="settings" size={size} color={color} />
-        ),
-      }}
-    />
-  </Tab.Navigator>
-);
+import KpaHomeScreen from "./apps/screens/KpaHomeScreen";
+import TospayAuth from "./tospay-library/auth";
+import TospayStore from "./tospay-library/auth/secure/Storage";
+import KpaAuthContext from "./apps/providers/KpaAuthContext";
+import TospayContext from "./tospay-library/provider/TospayContext";
 
 export default function App() {
-  const [user, setUser] = useState(null);
-  const [isReady, setIsReady] = useState(false);
+  const [user, setUser] = useState({});
+  const [country, setCountry] = useState({});
+  const [wallet, setWallet] = useState({});
+  const [token, setToken] = useState("");
 
   const restoreUser = async () => {
-    const userToken = await authStorage.getToken();
-    if (!userToken) return;
+    const tospayUser = await TospayStore.getUser();
+    const userToken = await TospayStore.getToken();
+    const userCountry = await TospayStore.getCountry();
+    const userWallet = await TospayStore.getWallet();
 
-    setUser(JSON.parse(userToken));
+    if (tospayUser === null || userToken === null || userWallet === null)
+      return;
+
+    setToken(userToken);
+    setCountry(userCountry);
+    setWallet(userWallet);
+    setUser(tospayUser);
   };
 
-  if (!isReady)
-    return (
-      <AppLoading startAsync={restoreUser} onFinish={() => setIsReady(true)} />
-    );
+  useEffect(() => {
+    restoreUser();
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <TospayContext.Provider
+      value={{
+        user,
+        setUser,
+        token,
+        setToken,
+        country,
+        setCountry,
+        wallet,
+        setWallet,
+      }}
+    >
       <NavigationContainer>
-        {user ? <TabNavigator /> : <AuthNavigator />}
+        {!token ? <TospayAuth /> : <MainNavigator />}
       </NavigationContainer>
-    </AuthContext.Provider>
+    </TospayContext.Provider>
   );
 }

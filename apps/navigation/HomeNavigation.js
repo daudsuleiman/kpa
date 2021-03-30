@@ -9,6 +9,7 @@ import { Image } from "react-native";
 import QrLogin from "../screens/QrLogin";
 import BillerLogin from "../screens/BillerLogin";
 import KpaCheckout from "../screens/KpaCheckout";
+import KpaProfile from "../screens/KpaProfile";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -56,7 +57,7 @@ const HomeNavigation = () => (
 
     <Tab.Screen
       name={"Profile"}
-      component={KpaCheckout}
+      component={KpaProfile}
       options={{
         tabBarLabel: "",
         tabBarIcon: ({ color }) => (

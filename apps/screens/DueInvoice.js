@@ -11,11 +11,36 @@ export default function DueInvoice({ navigation }) {
   const [valueChanged, setvalueChanged] = useState(false);
   const [total, setTotal] = useState(0.0);
   const [isGeneratingPrn, setIsGeneratingPrn] = useState(false);
+  const [invoices, setinvoices] = useState([]);
+  const [currency, setcurrency] = useState("");
 
-  const { invoices, customerNumber } = useContext(KpaContext);
+  const { cusPassword, customerNumber } = useContext(KpaContext);
+
+  const fetchInvoice = async () => {
+    const data = {
+      customernumber: customerNumber,
+      password: cusPassword,
+    };
+    setIsGeneratingPrn(true);
+    const response = await KpaEndpoints.billerLogin(data);
+
+    if (!response.ok) {
+      setIsGeneratingPrn(false);
+      console.log(response);
+      return;
+    }
+
+    setIsGeneratingPrn(false);
+    setinvoices(response.data.data);
+
+    setcurrency(response.data.data[0].currency);
+  };
+
+  useEffect(() => {
+    fetchInvoice();
+  }, []);
 
   const handleGeneratePrn = async () => {
-
     const genData = {
       customernumber: customerNumber,
       invoices: selectedInvoice,
@@ -29,11 +54,10 @@ export default function DueInvoice({ navigation }) {
     }
 
     setIsGeneratingPrn(false);
-    console.log(response.data);
 
     navigation.navigate("Summary", {
       data: selectedInvoice,
-      description:response.data.data,
+      description: response.data.data,
       type: "Invoice",
     });
   };
@@ -48,8 +72,6 @@ export default function DueInvoice({ navigation }) {
 
     setTotal(sum);
   }, [valueChanged]);
-
-  const currency = invoices[0].currency;
 
   return (
     <View style={{ flexGrow: 1, backgroundColor: "#FFFFFF" }}>

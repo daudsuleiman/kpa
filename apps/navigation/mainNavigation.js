@@ -7,6 +7,7 @@ import LinkAccounts from "../screens/LinkAccounts";
 import HomeNavigation from "./HomeNavigation";
 import InvoiceNavigation from "./InvoiceNavigation";
 import OpenBillsNavigation from "./OpenBillsNavigation";
+import OpenBillLogin from "../screens/OpenBillLogin";
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,12 @@ const AppNavigator = () => (
       name={"ViewInvoice"}
       component={InvoiceNavigation}
       options={{ headerShown: false }}
+    />
+
+    <Stack.Screen 
+    name="KpaAccounts" 
+    component={OpenBillLogin}
+    options={{ headerShown: false }}
     />
 
     <Stack.Screen

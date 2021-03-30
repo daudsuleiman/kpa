@@ -7,6 +7,7 @@ export default function SelectableOpenBill({
   data,
   selectedData,
   removeItem,
+  date
 }) {
   const [selected, setSelected] = useState(false);
 
@@ -79,10 +80,10 @@ export default function SelectableOpenBill({
 
       <View style={{ flex: 3, justifyContent: "center", marginLeft: 16 }}>
         <TospayText numberOfLines={1} style={{}}>
-          {`${type}  ${data.prn}`}
+          {`${type}  ${data.referenceNo}`}
         </TospayText>
-        <TospayText numberOfLines={1} style={{ color: "#b0b0b0" }}>
-          {data.due}
+        <TospayText numberOfLines={1} style={{ fontSize:14, color: "#b0b0b0" }}>
+          {`Due: ${data.expiryAt}`}
         </TospayText>
       </View>
 

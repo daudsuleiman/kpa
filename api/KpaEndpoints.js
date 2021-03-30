@@ -9,6 +9,10 @@ const billerLogin = (loginData) => {
   return client.post("/kpa/management/login", data);
 };
 
+const fetchOpenBills = (data) => {
+  return client.post("/kpa/customer/fetch", data);
+};
+
 const generatePrn = (genData) => {
   const data = {
     customer_number: genData.customernumber,
@@ -28,6 +32,7 @@ const getPaymentToken = (PayData) => {
 
 export default {
   billerLogin,
+  fetchOpenBills,
   generatePrn,
-  getPaymentToken
+  getPaymentToken,
 };

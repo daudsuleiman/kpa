@@ -7,39 +7,38 @@ import PaymentSummary from "../screens/PaymentSummary";
 import SuccessSummary from "../screens/SuccessSummary";
 import BillerLogin from "../screens/BillerLogin";
 import KpaCheckout from "../screens/KpaCheckout";
+import KpaAccountContext from "../providers/KpaAccountContext";
 
 const Stack = createStackNavigator();
 
-const InvoiceNavigation = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name={"BillerLogin"}
-      component={BillerLogin}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name={"Due"}
-      component={DueInvoiceHome}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name={"Summary"}
-      component={PaymentSummary}
-      options={{ headerShown: false }}
-    />
+const InvoiceNavigation = ({ route }) => (
+  <KpaAccountContext.Provider value={{ route }}>
+    <Stack.Navigator>
+    
+      <Stack.Screen
+        name={"Due"}
+        component={DueInvoiceHome}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={"Summary"}
+        component={PaymentSummary}
+        options={{ headerShown: false }}
+      />
 
-    <Stack.Screen
-      name={"KpaCheckout"}
-      component={KpaCheckout}
-      options={{ headerShown: false }}
-    />
+      <Stack.Screen
+        name={"KpaCheckout"}
+        component={KpaCheckout}
+        options={{ headerShown: false }}
+      />
 
-    <Stack.Screen
-      name={"Success"}
-      component={SuccessSummary}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
+      <Stack.Screen
+        name={"Success"}
+        component={SuccessSummary}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  </KpaAccountContext.Provider>
 );
 
 export default InvoiceNavigation;

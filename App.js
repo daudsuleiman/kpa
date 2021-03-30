@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import MainNavigator from "./apps/navigation/mainNavigation";
+import { AppLoading } from "expo";
 
-import KpaHomeScreen from "./apps/screens/KpaHomeScreen";
 import TospayAuth from "./tospay-library/auth";
 import TospayStore from "./tospay-library/auth/secure/Storage";
 import KpaAuthContext from "./apps/providers/KpaAuthContext";
@@ -13,6 +13,7 @@ export default function App() {
   const [country, setCountry] = useState({});
   const [wallet, setWallet] = useState({});
   const [token, setToken] = useState("");
+  const [isReady, setisReady] = useState(false);
 
   const restoreUser = async () => {
     const tospayUser = await TospayStore.getUser();
@@ -29,9 +30,10 @@ export default function App() {
     setUser(tospayUser);
   };
 
-  useEffect(() => {
-    restoreUser();
-  }, []);
+  if (!isReady)
+    return (
+      <AppLoading startAsync={restoreUser} onFinish={() => setisReady(true)} />
+    );
 
   return (
     <TospayContext.Provider

@@ -8,6 +8,7 @@ import TospayText from "../../tospay-library/components/TospayText";
 import TospayForm from "../../tospay-library/components/TospayForm";
 import TospayInputForm from "../../tospay-library/components/TospayInputForm";
 import TospaySubmitButton from "../../tospay-library/components/TospaySubmitButton";
+import KpaStore from "../Cache/KpaStore";
 
 const validationSchema = Yup.object().shape({
   customernumber: Yup.string().required().label("Customer Number"),
@@ -15,10 +16,15 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function OpenBillLogin({ navigation }) {
-  const accessBillerAccount = (values) => {
-    console.log(values);
-    navigation.navigate("OpenBills");
+  const accessBillerAccount = async (values) => {
+    //Verify if the accunts added are valid
+
+    KpaStore.storeBillerAccount({
+      customernumber: values.customernumber,
+      password: values.password,
+    });
   };
+
   return (
     <Screen
       backgroundImage={backgroundImage}

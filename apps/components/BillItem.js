@@ -31,7 +31,7 @@ export default function BillItem({ currency, type, data }) {
       <View style={{ flex: 3, justifyContent: "center", marginLeft: 16 }}>
         {data ? (
           <TospayText numberOfLines={1} style={{}}>
-            {type === "PRN" ? `${type} ${data.prn}` : `${type} ${data.bill_no}`}
+            {type === "PRN" ? `${type} ${data.referenceNo}` : `${type} ${data.bill_no}`}
           </TospayText>
         ) : (
           <TospayText

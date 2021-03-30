@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Root, Popup } from "popup-ui";
+
 import Screen from "./Screen";
 import backgroundImage from "../../assets/library/background.png";
 import { FlatList, ScrollView, View } from "react-native";
@@ -29,7 +31,28 @@ export default function PaymentSummary({ navigation, route }) {
 
     if (!response.ok) {
       setpaying(false);
-      console.log(response);
+
+      if (!response.data.error) {
+        Popup.show({
+          type: "Danger",
+          title: response.problem,
+          // button: false,
+          textBody: response.data.data.description,
+          buttontext: "Close",
+          callback: () => Popup.hide(),
+        });
+
+        return;
+      }
+
+      Popup.show({
+        type: "Danger",
+        title: response.data.description,
+        // button: false,
+        textBody: response.data.error[0].message,
+        buttontext: "Close",
+        callback: () => Popup.hide(),
+      });
       return;
     }
 
@@ -41,104 +64,114 @@ export default function PaymentSummary({ navigation, route }) {
   };
 
   return (
-    <Screen
-      backgroundImage={backgroundImage}
-      leftIcon={"arrowleft"}
-      tilte={"Payment Summary"}
-      onBackPress={() => navigation.goBack()}
-    >
+    <Root>
       <TospayIndecator isLoading={paying} />
-      <View style={{ paddingLeft: 6, paddingRight: 6, flex: 4 }}>
-        <FlatList
-          data={invoice}
-          keyExtractor={(item) => item.bill_no.toString()}
-          ListHeaderComponent={
-            <View style={{ paddingTop: 16, paddingBottom: 16 }}>
-              <View>
-                <TospayText numberOfLines={1} style={{ color: "#B0B0B0" }}>
-                  Total payment
-                </TospayText>
-              </View>
 
-              <View style={{ flexDirection: "row", padding: 3 }}>
-                <View
-                  style={{
-                    alignItems: "flex-end",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <TospayText
-                    numberOfLines={1}
-                    style={{ fontSize: 12, marginBottom: 2, color: "#B0B0B0" }}
-                  >
-                    {route.params.description.currency}
-                  </TospayText>
-                </View>
-
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "flex-end",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <TospayText numberOfLines={1}>
-                    {route.params.description.amount}
-                  </TospayText>
-                </View>
-              </View>
-            </View>
-          }
-          renderItem={(item) => {
-            return (
-              <BillItem
-                currency={route.params.description.currency}
-                type={route.params.type}
-                data={item.item}
-              />
-            );
-          }}
-        />
-      </View>
-
-      <View
-        style={{
-          justifyContent: "flex-start",
-          padding: 6,
-          flex: 1,
-          alignItems: "center",
-        }}
+      <Screen
+        backgroundImage={backgroundImage}
+        leftIcon={"arrowleft"}
+        tilte={"Payment Summary"}
+        onBackPress={() => navigation.goBack()}
       >
-        <View style={{ marginTop: 6 }}>
-          <TospayText numberOfLines={1} style={{ color: "#B0B0B0" }}>
-            Payment Reference Number (PRN)
-          </TospayText>
-          <TospayText numberOfLines={1}>
-            {route.params.description.referenceNo}
-          </TospayText>
+        <View style={{ paddingLeft: 6, paddingRight: 6, flex: 4 }}>
+          <FlatList
+            data={invoice}
+            keyExtractor={(item) =>
+              item.bill_no
+                ? item.bill_no.toString()
+                : item.referenceNo.toString()
+            }
+            ListHeaderComponent={
+              <View style={{ paddingTop: 16, paddingBottom: 16 }}>
+                <View>
+                  <TospayText numberOfLines={1} style={{ color: "#B0B0B0" }}>
+                    Total payment
+                  </TospayText>
+                </View>
+
+                <View style={{ flexDirection: "row", padding: 3 }}>
+                  <View
+                    style={{
+                      alignItems: "flex-end",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <TospayText
+                      numberOfLines={1}
+                      style={{
+                        fontSize: 12,
+                        marginBottom: 2,
+                        color: "#B0B0B0",
+                      }}
+                    >
+                      {route.params.description.currency}
+                    </TospayText>
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "flex-end",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <TospayText numberOfLines={1}>
+                      {route.params.description.amount}
+                    </TospayText>
+                  </View>
+                </View>
+              </View>
+            }
+            renderItem={(item) => {
+              return (
+                <BillItem
+                  currency={route.params.description.currency}
+                  type={route.params.type}
+                  data={item.item}
+                />
+              );
+            }}
+          />
         </View>
 
         <View
           style={{
-            justifyContent: "flex-end",
-            flexDirection: "row",
+            justifyContent: "flex-start",
             padding: 6,
             flex: 1,
             alignItems: "center",
           }}
         >
-          <View style={{ flex: 1, padding: 6 }}>
-            <KpaButton title={"Pay"} onPress={handleCheckout} />
+          <View style={{ marginTop: 6 }}>
+            <TospayText numberOfLines={1} style={{ color: "#B0B0B0" }}>
+              Payment Reference Number (PRN)
+            </TospayText>
+            <TospayText numberOfLines={1}>
+              {route.params.description.referenceNo}
+            </TospayText>
           </View>
-          <View style={{ padding: 6 }}>
-            <KpaButton
-              title={"Share"}
-              isDisabled={true}
-              icon={"share-variant"}
-            />
+
+          <View
+            style={{
+              justifyContent: "flex-end",
+              flexDirection: "row",
+              padding: 6,
+              flex: 1,
+              alignItems: "center",
+            }}
+          >
+            <View style={{ flex: 1, padding: 6 }}>
+              <KpaButton title={"Pay"} onPress={handleCheckout} />
+            </View>
+            <View style={{ padding: 6 }}>
+              <KpaButton
+                title={"Share"}
+                isDisabled={true}
+                icon={"share-variant"}
+              />
+            </View>
           </View>
         </View>
-      </View>
-    </Screen>
+      </Screen>
+    </Root>
   );
 }

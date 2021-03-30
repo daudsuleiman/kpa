@@ -1,12 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
+import KpaEndpoints from "../../api/KpaEndpoints";
+import TospayIndecator from "../../tospay-library/components/TospayIndecator";
 import KpaPayButton from "../components/KpaPayButton";
 import SelectableOpenBill from "../components/SelectableOpenBill";
+import KpaAccountContext from "../providers/KpaAccountContext";
 
 export default function DueBills({ navigation }) {
   const [selectedPrn, setSelectedPrn] = useState([]);
   const [valueChanged, setvalueChanged] = useState(false);
   const [total, setTotal] = useState(0.0);
+  const [isLoading, setisLoading] = useState(false);
+  const [dueBills, setdueBills] = useState([]);
+  const [currency, setcurrency] = useState("");
+
+  const { route } = useContext(KpaAccountContext);
+
+  const fetchbills = async () => {
+    const dataPost = {
+      status: "GENERATED",
+      customer_number: route.params.data.customernumber,
+    };
+
+    setisLoading(true);
+    const response = await KpaEndpoints.fetchOpenBills(dataPost);
+    if (!response.ok) {
+      setisLoading(false);
+      console.log(response);
+    }
+
+    setisLoading(false);
+    setdueBills(response.data.data);
+    setcurrency(response.data.data[0].currency);
+    console.log(response.data);
+  };
 
   useEffect(() => {
     let sum = 0.0;
@@ -19,109 +46,13 @@ export default function DueBills({ navigation }) {
     setTotal(sum);
   }, [valueChanged]);
 
-  const dueBills = [
-    {
-      prn: "0123456789",
-      due: "21 / 03 / 2021",
-      amount: "2000",
-      currency: "KES",
-      id: 0,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 04 / 2021",
-      amount: "9000",
-      currency: "KES",
-      id: 1,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 04 / 2021",
-      amount: "14000",
-      currency: "KES",
-      id: 2,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 06 / 2021",
-      amount: "23000",
-      currency: "KES",
-      id: 3,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 07 / 2021",
-      amount: "1000",
-      currency: "KES",
-      id: 4,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 08 / 2021",
-      amount: "43000",
-      currency: "KES",
-      id: 5,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 09 / 2021",
-      amount: "30000",
-      currency: "KES",
-      id: 6,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 10 / 2021",
-      amount: "32000",
-      currency: "KES",
-      id: 7,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 11 / 2021",
-      amount: "12000",
-      currency: "KES",
-      id: 8,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 12 / 2021",
-      amount: "23000",
-      currency: "KES",
-      id: 9,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 01 / 2022",
-      amount: "53000",
-      currency: "KES",
-      id: 10,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 02 / 2021",
-      amount: "24000",
-      currency: "KES",
-      id: 11,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 02 / 2022",
-      amount: "17000",
-      currency: "KES",
-      id: 12,
-    },
-    {
-      prn: "0123456789",
-      due: "21 / 01 / 2021",
-      amount: "49000",
-      currency: "KES",
-      id: 13,
-    },
-  ];
+  useEffect(() => {
+    fetchbills();
+  }, []);
 
   return (
     <View style={{ flexGrow: 1, backgroundColor: "#FFFFFF" }}>
+      <TospayIndecator isLoading={isLoading} />
       <View style={{ flex: 1 }}>
         <FlatList
           data={dueBills}
@@ -159,11 +90,17 @@ export default function DueBills({ navigation }) {
               data: selectedPrn,
               total: total,
               type: "PRN",
+
+              description: {
+                referenceNo: selectedPrn.referenceNo,
+                currency: currency,
+                amount: total,
+              },
             });
           }}
           leftText={"CONTINUE"}
           rightText={total.toLocaleString()}
-          currency={"KES"}
+          currency={currency}
           isDisabled={selectedPrn.length ? false : true}
         />
       </View>

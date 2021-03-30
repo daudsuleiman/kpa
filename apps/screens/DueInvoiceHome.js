@@ -1,22 +1,26 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import BillScreens from "../components/BillScreens";
 import DueInvoice from "./DueInvoice";
 import PaidInvoice from "./PaidInvoice";
 import KpaContext from "../provider/KpaContext";
+import KpaAccountContext from "../providers/KpaAccountContext";
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function DueInvoiceHome({ navigation, route }) {
-  const [invoices, setInvoices] = useState(route.params.bills);
+export default function DueInvoiceHome({ navigation }) {
+  const { route } = useContext(KpaAccountContext);
+
   const [customerNumber, setCustomerNumber] = useState(
-    route.params.customernumber
+    route.params.data.customernumber
   );
+
+  const [cusPassword, setCusPassword] = useState(route.params.data.password);
 
   return (
     <KpaContext.Provider
-      value={{ invoices, setInvoices, customerNumber, setCustomerNumber }}
+      value={{ cusPassword, setCusPassword, customerNumber, setCustomerNumber }}
     >
       <BillScreens onBackPress={() => navigation.goBack()} title={"Invoice "}>
         <Tab.Navigator

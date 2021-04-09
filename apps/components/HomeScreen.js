@@ -8,16 +8,14 @@ import {
   View,
 } from "react-native";
 import styled from "styled-components";
-import { AntDesign } from "@expo/vector-icons";
+import { SimpleLineIcons } from "@expo/vector-icons";
 import TospayText from "../../tospay-library/components/TospayText";
 
 export default function HomeScreen({
   backgroundImage,
   children,
-  onViewOpenBills,
-  onViewInvoice,
-  onViewBillerAccounts,
-  username
+  onChangeAccount,
+  username,
 }) {
   return (
     <Container>
@@ -31,15 +29,33 @@ export default function HomeScreen({
         <AppBackground source={require("../../assets/library/background.png")}>
           <SafeAreaView style={styles.safeView}>
             <AppBar>
-              <TospayText
-                numberOfLines={1}
-                style={{
-                  justifyContent: "center",
-                  color: "#FFFFFF",
-                  fontWeight: "bold",
-                  fontSize: 20,
-                }}
-              >{`Habari ${username} !`}</TospayText>
+              <TouchableOpacity onPress={onChangeAccount} style={{ flexDirection: "row", flex: 1 }}>
+                <View style={{ flex: 1, alignItems:'flex-start', }}>
+                  <TospayText
+                    numberOfLines={1}
+                    style={{
+                      justifyContent: "flex-start",
+                      color: "#FFFFFF",
+                      fontSize: 26,
+                    }}
+                  >{`Habari ${username} !`}</TospayText>
+                  <TospayText
+                    numberOfLines={1}
+                    style={{ color: "white", fontSize: 16 }}
+                  >
+                    124357487
+                  </TospayText>
+                </View>
+                <View
+                  style={{
+                    marginLeft: 16,
+                    alignItems: "flex-start",
+                    marginRight: 16,
+                  }}
+                >
+                  <SimpleLineIcons name="arrow-down" size={20} color="white" />
+                </View>
+              </TouchableOpacity>
 
               <Image
                 style={{ width: 30, height: 30 }}
@@ -49,7 +65,7 @@ export default function HomeScreen({
 
             {/* Images top start */}
 
-            <View
+            {/* <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-evenly",
@@ -148,7 +164,7 @@ export default function HomeScreen({
                   Biller Account
                 </TospayText>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             {/* Images top end */}
           </SafeAreaView>
@@ -315,7 +331,7 @@ const AppMainContainer = styled.View`
 const AppBar = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  align-items: center
+  align-items: flex-start
   padding: 16px;
 `;
 

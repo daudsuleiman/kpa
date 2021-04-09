@@ -38,9 +38,9 @@ export default function BillScreens({
               <View style={{ }}/>
             </View>
             <AppBar>
-              <TouchableOpacity onPress={onBackPress}>
+             {leftIcon && <TouchableOpacity onPress={onBackPress}>
                 <AntDesign name={"arrowleft"} size={24} color="#FFFFFF" />
-              </TouchableOpacity>
+              </TouchableOpacity>}
               <Text style={styles.text}>{title}</Text>
             </AppBar>
           </SafeAreaView>
@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 24,
     marginLeft:16,
-    fontWeight:'bold',
     color: "#FFFFFF",
     
   },

@@ -6,17 +6,18 @@ import DueInvoice from "./DueInvoice";
 import PaidInvoice from "./PaidInvoice";
 import KpaContext from "../provider/KpaContext";
 import KpaAccountContext from "../providers/KpaAccountContext";
+import KpaClientContext from "../provider/KpaClientContext";
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function DueInvoiceHome({ navigation }) {
-  const { route } = useContext(KpaAccountContext);
+  const { billerClient, setBillerclient } = useContext(KpaClientContext);
 
   const [customerNumber, setCustomerNumber] = useState(
-    route.params.data.customernumber
+    billerClient.customernumber
   );
 
-  const [cusPassword, setCusPassword] = useState(route.params.data.password);
+  const [cusPassword, setCusPassword] = useState(billerClient.password);
 
   return (
     <KpaContext.Provider

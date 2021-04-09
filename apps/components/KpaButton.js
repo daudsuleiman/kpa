@@ -3,10 +3,20 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import TospayText from "../../tospay-library/components/TospayText";
 
-export default function KpaButton({ onPress, isDisabled, title, icon, height=40 }) {
+export default function KpaButton({
+  onPress,
+  isDisabled,
+  title,
+  icon,
+  height = 40,
+}) {
   return (
     <TouchableOpacity
-      style={isDisabled ? [styles.disabledButton, { height:height} ]: [styles.enabledutton,{ height:height}]}
+      style={
+        isDisabled
+          ? [styles.disabledButton, { height: height }]
+          : [styles.enabledutton, { height: height }]
+      }
       disabled={isDisabled}
       onPress={onPress}
     >
@@ -27,7 +37,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   enabledutton: {
-    backgroundColor: "#10549B",
+    backgroundColor: "#1A4587",
     borderRadius: 6,
     padding: 6,
     justifyContent: "center",

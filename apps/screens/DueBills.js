@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
 import KpaEndpoints from "../../api/KpaEndpoints";
 import TospayIndecator from "../../tospay-library/components/TospayIndecator";
+import TospayContext from "../../tospay-library/provider/TospayContext";
 import KpaPayButton from "../components/KpaPayButton";
 import SelectableOpenBill from "../components/SelectableOpenBill";
-import KpaAccountContext from "../providers/KpaAccountContext";
+import KpaClientContext from "../provider/KpaClientContext";
 
 export default function DueBills({ navigation }) {
   const [selectedPrn, setSelectedPrn] = useState([]);
@@ -14,12 +15,20 @@ export default function DueBills({ navigation }) {
   const [dueBills, setdueBills] = useState([]);
   const [currency, setcurrency] = useState("");
 
-  const { route } = useContext(KpaAccountContext);
+  const { billerClient } = useContext(KpaClientContext);
+  const { country } = useContext(TospayContext);
+
+  const isEmpty = (obj) => {
+    for (var x in obj) {
+      return false;
+    }
+    return true;
+  };
 
   const fetchbills = async () => {
     const dataPost = {
       status: "GENERATED",
-      customer_number: route.params.data.customernumber,
+      customer_number: billerClient.customernumber,
     };
 
     setisLoading(true);
@@ -31,8 +40,11 @@ export default function DueBills({ navigation }) {
 
     setisLoading(false);
     setdueBills(response.data.data);
-    setcurrency(response.data.data[0].currency);
-    console.log(response.data);
+    if (isEmpty(response.data.data)) {
+      setcurrency(country.currency);
+    } else {
+      setcurrency(response.data.data[0].currency);
+    }
   };
 
   useEffect(() => {

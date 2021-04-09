@@ -47,6 +47,8 @@ export default function SelectableOpenBill({
           selected
             ? {
                 flex: 1,
+                width:45,
+                height:45,
                 backgroundColor: "#203C73",
                 justifyContent: "center",
                 alignItems: "center",
@@ -55,6 +57,8 @@ export default function SelectableOpenBill({
               }
             : {
                 flex: 1,
+                width:45,
+                height:45,
                 backgroundColor: "#DBEDFF",
                 justifyContent: "center",
                 alignItems: "center",
@@ -65,24 +69,24 @@ export default function SelectableOpenBill({
       >
         {selected && (
           <Image
-            style={{ width: 50, height: 50 }}
+          style={{ width: 39, height: 39 }}
             source={require("../../assets/selected.png")}
           />
         )}
 
         {!selected && (
           <Image
-            style={{ width: 50, height: 50 }}
+            style={{ width: 39, height: 39 }}
             source={require("../../assets/open_bills.png")}
           />
         )}
       </View>
 
       <View style={{ flex: 3, justifyContent: "center", marginLeft: 16 }}>
-        <TospayText numberOfLines={1} style={{}}>
+        <TospayText numberOfLines={1} style={{ fontSize:16 }}>
           {`${type}  ${data.referenceNo}`}
         </TospayText>
-        <TospayText numberOfLines={1} style={{ fontSize:14, color: "#b0b0b0" }}>
+        <TospayText numberOfLines={1} style={{ fontSize:12, color: "#b0b0b0" }}>
           {`Due: ${data.expiryAt}`}
         </TospayText>
       </View>

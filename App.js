@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import MainNavigator from "./apps/navigation/mainNavigation";
 import { AppLoading } from "expo";
+import { ModalPortal } from "react-native-modals";
 
 import TospayAuth from "./tospay-library/auth";
 import TospayStore from "./tospay-library/auth/secure/Storage";
@@ -51,6 +52,7 @@ export default function App() {
       <NavigationContainer>
         {!token ? <TospayAuth /> : <MainNavigator />}
       </NavigationContainer>
+      <ModalPortal />
     </TospayContext.Provider>
   );
 }

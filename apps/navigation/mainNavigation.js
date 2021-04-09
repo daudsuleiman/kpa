@@ -1,52 +1,78 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-
 
 import LinkAccounts from "../screens/LinkAccounts";
 
 import HomeNavigation from "./HomeNavigation";
-import InvoiceNavigation from "./InvoiceNavigation";
-import OpenBillsNavigation from "./OpenBillsNavigation";
-import OpenBillLogin from "../screens/OpenBillLogin";
+import QrLogin from "../screens/QrLogin";
+import KpaProfile from "../screens/KpaProfile";
+import BillerAccount from "../screens/BillerAccount";
+import KpaClientContext from "../provider/KpaClientContext";
+import KpaStore from "../Cache/KpaStore";
 
 const Stack = createStackNavigator();
 
-const AppNavigator = () => (
-  <Stack.Navigator
-    initialRouteName={"Home"}
-    activeColor="#034097"
-    barStyle={{ backgroundColor: "#FFFFFF", elevation: 6 }}
-  >
-    <Stack.Screen
-      name={"Home"}
-      component={HomeNavigation}
-      options={{ headerShown: false }}
-    />
+export default function AppNavigator() {
+  const [billerClient, setBillerclient] = useState({});
 
-    <Stack.Screen
-      name={"OpenBills"}
-      component={OpenBillsNavigation}
-      options={{ headerShown: false }}
-    />
+  const checkClientAccounts = async () => {
+    const response = await KpaStore.getBillerAccount();
 
-    <Stack.Screen
-      name={"ViewInvoice"}
-      component={InvoiceNavigation}
-      options={{ headerShown: false }}
-    />
+    if (response !== null) {
+      response.forEach((item) => {
+        if (item.active) {
+          setBillerclient(item);
+        }
+      });
+    }
+  };
 
-    <Stack.Screen 
-    name="KpaAccounts" 
-    component={OpenBillLogin}
-    options={{ headerShown: false }}
-    />
+  useEffect(() => {
+    checkClientAccounts();
+  }, []);
+  return (
+    <KpaClientContext.Provider value={{ billerClient, setBillerclient }}>
+      <Stack.Navigator
+        initialRouteName={"Home"}
+        activeColor="#034097"
+        barStyle={{ backgroundColor: "#FFFFFF", elevation: 6 }}
+      >
+        <Stack.Screen
+          name={"Home"}
+          component={HomeNavigation}
+          options={{ headerShown: false }}
+        />
 
-    <Stack.Screen
-      name={"BilllerAccounts"}
-      component={LinkAccounts}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
-);
+        <Stack.Screen
+          name="KpaAccounts"
+          component={BillerAccount}
+          options={{ headerShown: false }}
+        />
 
-export default AppNavigator;
+        <Stack.Screen
+          name={"BilllerAccounts"}
+          component={LinkAccounts}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name={"webLogin"}
+          component={QrLogin}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name={"Accounts"}
+          component={LinkAccounts}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name={"TospayProfile"}
+          component={KpaProfile}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    </KpaClientContext.Provider>
+  );
+}

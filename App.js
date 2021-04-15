@@ -50,7 +50,7 @@ export default function App() {
       }}
     >
       <NavigationContainer>
-        {!token ? <TospayAuth /> : <MainNavigator />}
+        {token ? <MainNavigator /> : <TospayAuth />}
       </NavigationContainer>
       <ModalPortal />
     </TospayContext.Provider>

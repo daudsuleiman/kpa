@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
+import { Root, Popup } from "popup-ui";
 import KpaEndpoints from "../../api/KpaEndpoints";
 import TospayIndecator from "../../tospay-library/components/TospayIndecator";
 import KpaPayButton from "../components/KpaPayButton";
 import SelectableBillItem from "../components/SelectableBillItem";
 import KpaContext from "../provider/KpaContext";
+import TospayText from "../../tospay-library/components/TospayText";
 
 export default function DueInvoice({ navigation }) {
   const [selectedInvoice, setSelectedInvoice] = useState([]);
@@ -13,10 +15,16 @@ export default function DueInvoice({ navigation }) {
   const [isGeneratingPrn, setIsGeneratingPrn] = useState(false);
   const [invoices, setinvoices] = useState([]);
   const [currency, setcurrency] = useState("");
+  const [noBillerAccout, setNoBillerAccout] = useState(false);
 
   const { cusPassword, customerNumber } = useContext(KpaContext);
 
   const fetchInvoice = async () => {
+    if (customerNumber === undefined && cusPassword == undefined) {
+      setNoBillerAccout(true);
+      return;
+    }
+
     const data = {
       customernumber: customerNumber,
       password: cusPassword,
@@ -76,6 +84,19 @@ export default function DueInvoice({ navigation }) {
   return (
     <View style={{ flexGrow: 1, backgroundColor: "#FFFFFF" }}>
       <TospayIndecator isLoading={isGeneratingPrn} />
+      {noBillerAccout && (
+        <View
+          style={{
+            flexGrow: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <TospayText style={{ margin: 16, textAlign: "center" }}>
+            Sorry, Please add a biller account to proceed
+          </TospayText>
+        </View>
+      )}
       <View style={{ flex: 1 }}>
         <FlatList
           data={invoices}

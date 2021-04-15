@@ -1,22 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import { BackHandler, FlatList, StyleSheet, View } from "react-native";
-import { ModalTitle, ModalContent, BottomModal } from "react-native-modals";
+import React, { useContext, useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
+import { ModalContent, BottomModal } from "react-native-modals";
 import { Root } from "popup-ui";
 
 import HomeScreen from "../components/HomeScreen";
-import TospayContext from "../../tospay-library/provider/TospayContext";
 import BillItem from "../components/BillItem";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import KpaStore from "../Cache/KpaStore";
 import AccountNavItem from "../components/AccountNavItem";
 import TospayText from "../../tospay-library/components/TospayText";
 import TouchableText from "../components/TouchableText";
+import KpaClientContext from "../provider/KpaClientContext";
 
-function KpaHomeScreen({ navigation, route }) {
-  const { user, setUser, setToken, setCountry, setWallet } = useContext(
-    TospayContext
-  );
-  const [account, setaccount] = useState({});
+function KpaHomeScreen({ navigation }) {
+  const { billerClient } = useContext(KpaClientContext);
 
   const [openAccount, setOpenAccount] = useState(false);
 
@@ -91,31 +86,14 @@ function KpaHomeScreen({ navigation, route }) {
     },
   ];
 
-  const checkIfBillerAccountExits = async () => {
-    const accountInfo = await KpaStore.getBillerAccount();
-    setaccount(accountInfo);
-  };
-
-  useEffect(() => {
-    {
-      route.params === undefined ? setOpenAccount(false) : setOpenAccount(true);
-    }
-  }, [route.params]);
-
-  useEffect(() => {
-    {
-      route.params === undefined ? setOpenAccount(false) : setOpenAccount(true);
-    }
-    checkIfBillerAccountExits();
-  }, []);
-
   return (
     <Root>
       <HomeScreen
         onChangeAccount={() => {
           setOpenAccount(true);
         }}
-        username={user.firstname}
+        username={billerClient ? billerClient.alias : null}
+        billerAccount={billerClient ? billerClient.customernumber : null}
       >
         <FlatList
           data={openBill}
@@ -214,7 +192,7 @@ function KpaHomeScreen({ navigation, route }) {
           <AccountNavItem
             onPress={() => {
               setOpenAccount(false);
-             // navigation.navigate("KpaAccounts");
+              // navigation.navigate("KpaAccounts");
             }}
             icon={"bell-outline"}
             name={"Notifications"}

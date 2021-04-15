@@ -16,6 +16,7 @@ export default function HomeScreen({
   children,
   onChangeAccount,
   username,
+  billerAccount
 }) {
   return (
     <Container>
@@ -38,12 +39,12 @@ export default function HomeScreen({
                       color: "#FFFFFF",
                       fontSize: 26,
                     }}
-                  >{`Habari ${username} !`}</TospayText>
+                  >{billerAccount ?  `${username}`: "No Biller"}</TospayText>
                   <TospayText
                     numberOfLines={1}
                     style={{ color: "white", fontSize: 16 }}
                   >
-                    124357487
+                    {billerAccount ? billerAccount : "Add Biller Account" }
                   </TospayText>
                 </View>
                 <View

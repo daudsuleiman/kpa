@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { Root } from 'popup-ui'
 
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import BillScreens from "../components/BillScreens";
@@ -20,24 +21,31 @@ export default function DueInvoiceHome({ navigation }) {
   const [cusPassword, setCusPassword] = useState(billerClient.password);
 
   return (
-    <KpaContext.Provider
-      value={{ cusPassword, setCusPassword, customerNumber, setCustomerNumber }}
-    >
-      <BillScreens onBackPress={() => navigation.goBack()} title={"Invoice "}>
-        <Tab.Navigator
-          timingConfig={0.2}
-          timing
-          tabBarOptions={{
-            style: {
-              elevation: 0,
-              backgroundColor: "white",
-            },
-          }}
-        >
-          <Tab.Screen name={"Due"} component={DueInvoice} />
-          <Tab.Screen name={"Paid"} component={PaidInvoice} />
-        </Tab.Navigator>
-      </BillScreens>
-    </KpaContext.Provider>
+    <Root>
+      <KpaContext.Provider
+        value={{
+          cusPassword,
+          setCusPassword,
+          customerNumber,
+          setCustomerNumber,
+        }}
+      >
+        <BillScreens onBackPress={() => navigation.goBack()} title={"Invoice "}>
+          <Tab.Navigator
+            timingConfig={0.2}
+            timing
+            tabBarOptions={{
+              style: {
+                elevation: 0,
+                backgroundColor: "white",
+              },
+            }}
+          >
+            <Tab.Screen name={"Due"} component={DueInvoice} />
+            {/* <Tab.Screen name={"Paid"} component={PaidInvoice} /> */}
+          </Tab.Navigator>
+        </BillScreens>
+      </KpaContext.Provider>
+    </Root>
   );
 }

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
 import KpaEndpoints from "../../api/KpaEndpoints";
 import TospayIndecator from "../../tospay-library/components/TospayIndecator";
+import TospayText from "../../tospay-library/components/TospayText";
 import TospayContext from "../../tospay-library/provider/TospayContext";
 import KpaPayButton from "../components/KpaPayButton";
 import SelectableOpenBill from "../components/SelectableOpenBill";
@@ -14,6 +15,7 @@ export default function DueBills({ navigation }) {
   const [isLoading, setisLoading] = useState(false);
   const [dueBills, setdueBills] = useState([]);
   const [currency, setcurrency] = useState("");
+  const [noBillerAccout, setNoBillerAccout] = useState(false);
 
   const { billerClient } = useContext(KpaClientContext);
   const { country } = useContext(TospayContext);
@@ -65,6 +67,20 @@ export default function DueBills({ navigation }) {
   return (
     <View style={{ flexGrow: 1, backgroundColor: "#FFFFFF" }}>
       <TospayIndecator isLoading={isLoading} />
+      {noBillerAccout && (
+        <View
+          style={{
+            flexGrow: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <TospayText style={{ margin: 16, textAlign: "center" }}>
+            Sorry, Please add a biller account to proceed
+          </TospayText>
+        </View>
+      )}
+      
       <View style={{ flex: 1 }}>
         <FlatList
           data={dueBills}

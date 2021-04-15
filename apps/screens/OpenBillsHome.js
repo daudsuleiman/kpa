@@ -9,7 +9,7 @@ import FailedBills from "./FailedBills";
 const Tab = createMaterialTopTabNavigator();
 export default function OpenBillsHome({ navigation }) {
   return (
-    <BillScreens onBackPress={() => navigation.goBack()} title={"Open Bills"}>
+    <BillScreens onBackPress={() => navigation.goBack()} title={"PRNs"}>
       <Tab.Navigator
         timingConfig={0.2}
         timing

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { Root, Popup } from "popup-ui";
 
-import { ModalTitle, ModalContent, BottomModal } from "react-native-modals";
+import { ModalContent, BottomModal } from "react-native-modals";
 
 import Screen from "./Screen";
 import backgroundImage from "../../assets/library/background.png";
@@ -47,35 +47,13 @@ export default function BillerAccount({ navigation }) {
 
   const addAliasforAccount = async (value) => {
     if (isEmpty(accounts)) {
-      const data = [
-        {
-          alias: value.alias,
-          customernumber: accountNumPass.customernumber,
-          password: accountNumPass.password,
-          active: true,
-        },
-      ];
-
-      KpaStore.storeBillerAccount(data);
-      getAccounts();
-      setaccountSelected(false);
-      setOpenAccount(false);
-      setOpenEditAccount(false);
-      setopenDeleteAccount(false);
-      setaddAliaas(false);
-    } else {
-      const data = [];
-
-      accounts.forEach((element) => {
-        data.push(element);
-      });
-
-      data.push({
+      const account = {
         alias: value.alias,
         customernumber: accountNumPass.customernumber,
         password: accountNumPass.password,
-        active: false,
-      });
+        active: true,
+      };
+      const data = [account];
 
       KpaStore.storeBillerAccount(data);
       getAccounts();
@@ -84,7 +62,30 @@ export default function BillerAccount({ navigation }) {
       setOpenEditAccount(false);
       setopenDeleteAccount(false);
       setaddAliaas(false);
+      return;
     }
+
+    const data = [];
+    console.log("Add other accounts");
+
+    accounts.forEach((element) => {
+      data.push(element);
+    });
+
+    data.push({
+      alias: value.alias,
+      customernumber: accountNumPass.customernumber,
+      password: accountNumPass.password,
+      active: false,
+    });
+
+    KpaStore.storeBillerAccount(data);
+    getAccounts();
+    setaccountSelected(false);
+    setOpenAccount(false);
+    setOpenEditAccount(false);
+    setopenDeleteAccount(false);
+    setaddAliaas(false);
   };
 
   const deleteAccount = async () => {
@@ -97,7 +98,6 @@ export default function BillerAccount({ navigation }) {
         Popup.show({
           type: "Danger",
           title: "Cannot delete Active",
-          // button: false,
           textBody:
             "Sorry you can not delete the active account switch to a different account then delete",
           buttontext: "Close",
@@ -110,7 +110,6 @@ export default function BillerAccount({ navigation }) {
         setopenDeleteAccount(false);
         return;
       }
-
     } else {
       const data = [];
 
@@ -145,7 +144,6 @@ export default function BillerAccount({ navigation }) {
       setOpenAccount(false);
       setOpenEditAccount(false);
       setopenDeleteAccount(false);
-      
     }
   };
 
@@ -196,13 +194,20 @@ export default function BillerAccount({ navigation }) {
 
   const getAccounts = async () => {
     const response = await KpaStore.getBillerAccount();
+
+    if (!isEmpty(response)) {
+      response.filter((item) => {
+        if (item.active) {
+          setBillerclient(item);
+        }
+      });
+    }
     setAccounts(response);
   };
 
   const initiateChangeName = async (value) => {
     if (!isEmpty(changeCurrent)) {
       const data = [];
-
       accounts.forEach((element) => {
         if (changeCurrent.customernumber === element.customernumber) {
           data.push({

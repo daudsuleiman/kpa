@@ -146,12 +146,15 @@ const HomeNavigation = ({ navigation }) => {
               />
             ),
           }}
+
           listeners={({ navigation }) => ({
             tabPress: (event) => {
               event.preventDefault();
               setOpenAccount(true);
             },
           })}
+
+          
         />
       </Tab.Navigator>
 

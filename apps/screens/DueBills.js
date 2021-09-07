@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+
 import KpaEndpoints from "../../api/KpaEndpoints";
 import TospayIndecator from "../../tospay-library/components/TospayIndecator";
 import TospayText from "../../tospay-library/components/TospayText";
@@ -16,6 +18,7 @@ export default function DueBills({ navigation }) {
   const [dueBills, setdueBills] = useState([]);
   const [currency, setcurrency] = useState("");
   const [noBillerAccout, setNoBillerAccout] = useState(false);
+  const isFocused = useIsFocused();
 
   const { billerClient } = useContext(KpaClientContext);
   const { country } = useContext(TospayContext);
@@ -61,8 +64,10 @@ export default function DueBills({ navigation }) {
   }, [valueChanged]);
 
   useEffect(() => {
-    fetchbills();
-  }, []);
+    if (isFocused) {
+      fetchbills();
+    }
+  }, [isFocused]);
 
   return (
     <View style={{ flexGrow: 1, backgroundColor: "#FFFFFF" }}>
@@ -80,7 +85,7 @@ export default function DueBills({ navigation }) {
           </TospayText>
         </View>
       )}
-      
+
       <View style={{ flex: 1 }}>
         <FlatList
           data={dueBills}

@@ -22,7 +22,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png"
       },
-      "package": "net.tospay.kpa"
+      "package": "net.tospay.biller24"
     },
     "web": {
       "favicon": "./assets/favicon.png"

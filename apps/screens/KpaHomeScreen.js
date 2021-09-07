@@ -3,15 +3,19 @@ import { FlatList, StyleSheet, View } from "react-native";
 import { ModalContent, BottomModal } from "react-native-modals";
 import { Root } from "popup-ui";
 
+import { useNetInfo } from "@react-native-community/netinfo";
+
 import HomeScreen from "../components/HomeScreen";
 import BillItem from "../components/BillItem";
 import AccountNavItem from "../components/AccountNavItem";
 import TospayText from "../../tospay-library/components/TospayText";
 import TouchableText from "../components/TouchableText";
 import KpaClientContext from "../provider/KpaClientContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function KpaHomeScreen({ navigation }) {
   const { billerClient } = useContext(KpaClientContext);
+  const netInfo = useNetInfo();
 
   const [openAccount, setOpenAccount] = useState(false);
 
@@ -88,6 +92,17 @@ function KpaHomeScreen({ navigation }) {
 
   return (
     <Root>
+      {!netInfo && (
+        <SafeAreaView
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#b0b0b0",
+          }}
+        >
+          <TospayText style={{ color: "white" }}>No Internet Access!</TospayText>
+        </SafeAreaView>
+      )}
       <HomeScreen
         onChangeAccount={() => {
           setOpenAccount(true);

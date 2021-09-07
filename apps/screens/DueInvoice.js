@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+
 import { Root, Popup } from "popup-ui";
 import KpaEndpoints from "../../api/KpaEndpoints";
 import TospayIndecator from "../../tospay-library/components/TospayIndecator";
@@ -16,6 +18,7 @@ export default function DueInvoice({ navigation }) {
   const [invoices, setinvoices] = useState([]);
   const [currency, setcurrency] = useState("");
   const [noBillerAccout, setNoBillerAccout] = useState(false);
+  const isFocused = useIsFocused();
 
   const { cusPassword, customerNumber } = useContext(KpaContext);
 
@@ -45,8 +48,10 @@ export default function DueInvoice({ navigation }) {
   };
 
   useEffect(() => {
-    fetchInvoice();
-  }, []);
+    if (isFocused) {
+      fetchInvoice();
+    }
+  }, [isFocused]);
 
   const handleGeneratePrn = async () => {
     const genData = {
